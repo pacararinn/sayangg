@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ucapan Ulang Tahun</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #fbd3e9, #bb377d);
+      color: white;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .card {
+      margin-top: 250px;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+      display: inline-block;
+      z-index: 10;
+      position: relative;
+      opacity: 0;
+      transition: opacity 1s ease-in;
+    }
+
+    .card.show {
+      opacity: 1;
+    }
+
+    a.instagram {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 24px;
+      background: white;
+      color: #bb377d;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    a.instagram:hover {
+      background: #ffe0f0;
+    }
+
+    .balloon {
+      width: 50px;
+      height: 70px;
+      background: red;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      position: absolute;
+      bottom: -120px;
+      animation: float 10s linear infinite;
+      opacity: 0;
+    }
+
+    .balloon::after {
+      content: '';
+      position: absolute;
+      bottom: -40px;
+      left: 50%;
+      width: 2px;
+      height: 40px;
+      background: #fff;
+      transform: translateX(-50%);
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(-120vh); opacity: 0; }
+    }
+
+    #confetti, #balloon-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      width: 100%;
+      height: 100%;
+      z-index: 5;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="confetti"></canvas>
+  <div id="balloon-container"></div>
+
+  <div class="card" id="finalMessage">
+    <h1>🎂 Selamat Ulang Tahun!! 🎉</h1>
+    <p>Semoga di usia arinn yang ke-18 tahun ini segala hal yang arinn semogakan akan dapat terkabulkan yaaa 💖</p>
+    <a class="instagram" href="https://drive.google.com/drive/folders/1X_akUcU8zre_XGeylDsrwnuYi35YA4Xb?usp=sharing" target="_blank">
+      silahkan di click cantikk 💖💖💖
+    </a>
+  </div>
+
+  <script>
+    // Konfeti
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const confetti = [];
+    for (let i = 0; i < 150; i++) {
+      confetti.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        r: Math.random() * 6 + 4,
+        d: Math.random() * 10 + 5,
+        color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+        tilt: Math.random() * 10 - 5,
+        tiltAngleIncrement: Math.random() * 0.07 + 0.05,
+        tiltAngle: 0
+      });
+    }
+
+    function drawConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confetti.forEach(c => {
+        ctx.beginPath();
+        ctx.lineWidth = c.r / 2;
+        ctx.strokeStyle = c.color;
+        ctx.moveTo(c.x + c.tilt + c.r / 4, c.y);
+        ctx.lineTo(c.x + c.tilt, c.y + c.tilt + c.r);
+        ctx.stroke();
+      });
+      updateConfetti();
+    }
+
+    function updateConfetti() {
+      confetti.forEach(c => {
+        c.tiltAngle += c.tiltAngleIncrement;
+        c.y += (Math.cos(c.d) + 3 + c.r / 2) / 2;
+        c.x += Math.sin(c.d);
+        c.tilt = Math.sin(c.tiltAngle) * 15;
+        if (c.y > canvas.height) {
+          c.y = -10;
+          c.x = Math.random() * canvas.width;
+        }
+      });
+    }
+
+    let confettiInterval = setInterval(drawConfetti, 20);
+
+    // Balon muncul setelah 2 detik
+    setTimeout(() => {
+      const container = document.getElementById('balloon-container');
+      for (let i = 0; i < 10; i++) {
+        const balloon = document.createElement('div');
+        balloon.className = 'balloon';
+        balloon.style.left = `${Math.random() * 100}%`;
+        balloon.style.background = `hsl(${Math.random() * 360}, 80%, 60%)`;
+        balloon.style.animationDelay = `${Math.random() * 3}s`;
+        balloon.style.opacity = '1';
+        container.appendChild(balloon);
+      }
+    }, 2000);
+
+    // Hapus efek dan tampilkan ucapan setelah 7 detik
+    setTimeout(() => {
+      clearInterval(confettiInterval);
+      document.getElementById('confetti').remove();
+      document.getElementById('balloon-container').remove();
+      document.getElementById('finalMessage').classList.add('show');
+    }, 7000);
+  </script>
+</body>
+</html>
